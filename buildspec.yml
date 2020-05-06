@@ -30,9 +30,12 @@ phases:
       - docker login -u $DOCKER_LOGIN_USERNAME -p $DOCKER_LOGIN_PASSWORD
       - docker push arorajatin08/demoapp:${COMMIT_HASH}
   artifacts:
-  files:
-    - target/*.jar
-  discard-paths: yes
+    files:
+      - target/*.jar
+    discard-paths: yes
+  cache:
+    paths:
+      - '/root/.m2/**/*'
       # - command
       #reports:
       #report-name-or-arn:
