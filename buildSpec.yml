@@ -1,0 +1,46 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  pre_build:
+    commands:
+      - echo pre build step
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo COMMIT_HASH
+      - echo pre build over
+      # - command
+  build:
+    commands:
+      - echo starting maven build
+      - cd $CODEBUILD_SRC_DIR
+      - mvn clean install
+      - docker build --build-arg JAR_FILE=target/*.jar -t arorajatin08/demoapp:${COMMIT_HASH} .
+      - echo pushing to repo
+      # - command
+  post_build:
+    commands:
+      - docker login -u <login> -p <password>
+      - docker push arorajatin08/demoapp:${COMMIT_HASH}
+      # - command
+      #reports:
+      #report-name-or-arn:
+      #files:
+      # - location
+      # - location
+    #base-directory: location
+    #discard-paths: yes
+    #file-format: JunitXml | CucumberJson
+    #artifacts:
+    #files:
+    # - location
+    # - location
+    #name: $(date +%Y-%m-%d)
+    #discard-paths: yes
+    #base-directory: location
+    #cache:
+    #paths:
+    # - paths
