@@ -26,8 +26,8 @@ phases:
   post_build:
     commands:
       - echo pushing to repo
-      - echo ${LOGIN_PASSWORD}
-      - docker login -u arorajatin08 -p ${LOGIN_PASSWORD}
+      - echo $LOGIN_PASSWORD
+      - docker login -u arorajatin08 -p $LOGIN_PASSWORD
       - docker push arorajatin08/demoapp:${COMMIT_HASH}
       # - command
       #reports:
