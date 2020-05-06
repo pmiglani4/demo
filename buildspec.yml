@@ -1,4 +1,7 @@
 version: 0.2
+env:
+  parameter-store:
+    LOGIN_PASSWORD: /CodeBuild/dockerLoginPassword
 phases:
   install:
     runtime-versions:
@@ -19,11 +22,12 @@ phases:
       - cd $CODEBUILD_SRC_DIR
       - mvn clean install
       - docker build --build-arg JAR_FILE=target/*.jar -t arorajatin08/demoapp:${COMMIT_HASH} .
-      - echo pushing to repo
       # - command
   post_build:
     commands:
-      - docker login -u <login> -p <password>
+      - echo pushing to repo
+      - echo ${LOGIN_PASSWORD}
+      - docker login -u arorajatin08 -p ${LOGIN_PASSWORD}
       - docker push arorajatin08/demoapp:${COMMIT_HASH}
       # - command
       #reports:
