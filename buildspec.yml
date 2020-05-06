@@ -1,7 +1,8 @@
 version: 0.2
 env:
   parameter-store:
-    LOGIN_PASSWORD: /CodeBuild/dockerLoginPassword
+    DOCKER_LOGIN_USERNAME: /CodeBuild/dockerLoginUsername
+    DOCKER_LOGIN_PASSWORD: /CodeBuild/dockerLoginPassword
 phases:
   install:
     runtime-versions:
@@ -26,9 +27,12 @@ phases:
   post_build:
     commands:
       - echo pushing to repo
-      - echo $LOGIN_PASSWORD
-      - docker login -u arorajatin08 -p $LOGIN_PASSWORD
+      - docker login -u $DOCKER_LOGIN_USERNAME -p $DOCKER_LOGIN_PASSWORD
       - docker push arorajatin08/demoapp:${COMMIT_HASH}
+  artifacts:
+  files:
+    - target/*.jar
+  discard-paths: yes
       # - command
       #reports:
       #report-name-or-arn:
